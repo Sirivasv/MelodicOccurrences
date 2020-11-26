@@ -1,5 +1,5 @@
 from input_output import csv_to_dict, add_tunefamily_ids
-from music_representations import extract_melodies_from_corpus
+from music_representations import extract_melodies_from_corpus, filter_phrases
 
 tune_family_data_path = "/media/sirivasv/DATAL/MCC/DATASUBSET/MTC-ANN-2.0/metadata/MTC-ANN-tune-family-labels.csv"
 tune_family_data_keys = ["filename","tunefamily"]
@@ -14,3 +14,4 @@ meta_dict = add_tunefamily_ids(meta_dict, tune_family_id_path, tune_family_id_ke
 
 music_files_path = "/media/sirivasv/DATAL/MCC/DATASUBSET/MTC-ANN-2.0/krn/"
 melody_dict = extract_melodies_from_corpus(music_files_path, meta_dict)
+phrase_dict = filter_phrases(melody_dict)
