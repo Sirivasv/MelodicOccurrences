@@ -17,7 +17,7 @@
 
 import csv
 
-def add_tunefamily_ids(in_dict,conversion_table_path):
+def add_tunefamily_ids(in_dict,conversion_table_path, conversion_table_path_keys):
     """ This function takes a list of dictionaries as produced by "csv_to_dict"
     and the path to a csv containing the tune family names and identifiers,
     and adds the identifiers to the in_dict list.
@@ -25,11 +25,20 @@ def add_tunefamily_ids(in_dict,conversion_table_path):
     with FS1.0 (which has tune family identifiers).
     Most function within MelodicOccurrences sort by tune family identifiers.
     """
-    mapping = csv_to_dict(conversion_table_path)
-    for entry in in_dict:
-        tf = next((m for m in mapping if m['tunefamily']==entry['tunefamily']),None)
-        entry['tunefamily_id'] = tf['tunefamily_id']
-    return in_dict
+    mapping = csv_to_dict(conversion_table_path, conversion_table_path_keys)
+    print("ORIGINAL TOTAL MELODIES: {0}".format(len(in_dict)))
+    new_meta_dict = []
+    cnt = 0
+    for e_i, entry in enumerate(in_dict):
+        tf = next((m for m in mapping if m['tunefamily']==entry['tunefamily_separated']),None)
+        if (tf == None):
+            cnt+=1
+        else:
+            entry['tunefamily_id'] = tf['tunefamily_id']
+            new_meta_dict.append(entry)
+    print("REMOVED: {0} melodies".format(cnt))
+    print("NEW TOTAL MELODIES: {0}".format(len(new_meta_dict)))
+    return new_meta_dict
 
 def csv_to_dict(doc, keys=None, deli=","):
     """ 
