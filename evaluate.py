@@ -139,14 +139,14 @@ def pattern_precision_recall(filtered_results, mel_dict, sim_dict,
         alg_match = [s for s in mel if alg_start<= s['onset'] <= alg_end]
         matched_phrase = next((s for s in sim_dict 
          if s['filename'] == filt['query_filename'] and 
-         int(s['phr_id']) == filt['query_segment_id']), None)
+         int(s['phrase_id']) == filt['query_segment_id']), None)
         ann_labels_this_melody = [s for s in sim_dict if 
          s['filename']==filt['match_filename']]
         for l in ann_labels_this_melody:
-            occurrence = annotatedPhraseSimilarityBinary(matched_phrase,
+            occurrence = annotated_phrase_identity(matched_phrase,
              l, [annotator])[annotator]
             if occurrence==1:
-                ann_occurrences.append(int(l['phr_id']))
+                ann_occurrences.append(int(l['phrase_id']))
         if ann_occurrences:
             max_overlap = 0
             for ann in ann_occurrences:
