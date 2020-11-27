@@ -112,7 +112,7 @@ def order_errors_by_tunefamily(result_list, phrase_dict):
     for t in tunefams:
         phrases = [p for p in phrase_dict if p['tunefamily_id'] == t]
         melodies = set([p['filename'] for p in phrases])
-        num_errors = len([r for r in resultList if r['id'][:12] in melodies])
+        num_errors = len([r for r in result_list if r['id'][:12] in melodies])
         normalize = len(phrases)
         ordered_errors_dict.append({'tunefamily_id': t, 
          'percentage': num_errors / float(normalize)})
@@ -130,8 +130,8 @@ def pattern_precision_recall(filtered_results, mel_dict, sim_dict,
     pattern_precision_recall = []
     for filt in filtered_results:
         ann_occurrences = []
-        alg_start = filt['matches'][sim_measure]['match_start_onset']
-        alg_end = filt['matches'][sim_measure]['match_end_onset']
+        alg_start = filt['matches'][sim_measure][0]['match_start_onset']
+        alg_end = filt['matches'][sim_measure][0]['match_end_onset']
         alg_length = alg_end - alg_start
         # get the melody in which the query is matched
         mel = next((m['symbols'] for m in mel_dict 
