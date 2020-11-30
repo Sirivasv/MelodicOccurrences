@@ -17,6 +17,7 @@
 
 import numpy as np
 from scipy import spatial
+import music21 as mus
 
 def cardinality_score(seq1, seq2):
     """ calculates the cardinality score between two sequences """
@@ -109,6 +110,105 @@ def local_alignment(seq1, seq2, insert_score, delete_score, sim_score,
         num_matches = 5
     else:
         num_matches = m.size
+    for i in range(num_matches):
+        row = int(m[i])
+        column = int(n[i])
+        match_length = 0
+        while d[row,column] > 0 :
+            if b[row,column] == 0:
+                # deletion from longer sequence, move left
+                column -= 1
+                match_length += 1
+            elif b[row,column] == 1:
+                # insertion into longer sequence, move up
+                row -= 1
+            elif b[row,column] == 2:
+                # substitution, move diagonally
+                row -= 1
+                column -= 1
+                match_length += 1
+            else :
+                print(d, b, row, column)
+        match_list.append([column, match_length, similarity])
+    return match_list
+
+def pitch_class_difference(seq1, seq2, variances):
+    """ subsitution score for local alignment"""
+    # print("****")
+    # print(seq1)
+    pitch_1 = mus.pitch.Pitch(seq1)
+    # print(pitch_1.spanish)
+    # print("----")
+    # print(seq2)
+    pitch_2 = mus.pitch.Pitch(seq2)
+    # print(pitch_2.spanish)
+    # print(pitch_1.spanish == pitch_2.spanish)
+    if pitch_1.spanish == pitch_2.spanish:
+        return 1.0
+    else:
+        return 0.0
+
+def local_alignment_mod(seq1, seq2, insert_score=0.0, delete_score=0.0, sim_score=pitch_class_difference, 
+    return_positions=True, variances=[]):
+    """ local alignment takes two sequences (the query comes first), 
+    the insertion and deletion sore,
+    and a function which defines match / mismatch
+    returns the index where the match starts in the sequence, 
+    and the normalized score of the match
+    """
+    #initialize dynamic programming matrix
+    d = np.zeros([len(seq1)+1, len(seq2)+1])
+    for i in range(0, len(seq1) + 1):
+        d[i,0] = 0.0
+    for j in range(0, len(seq2) + 1):
+        d[0,j] = 0.0
+    #initialize backtrace matrix
+    b = np.zeros([len(seq1)+1, len(seq2)+1])
+    max_score = 0.0
+    #fill dynamic programming matrix
+    for i in range(1, len(seq1) + 1):
+        # query sequence, rows of dynamic programming matrix
+        for j in range(1, len(seq2) + 1):
+            # matched in longer sequence, columns of dynamic programming matrix
+            from_left = d[i,j-1] + delete_score
+            from_top = d[i-1,j] + insert_score
+            diag = d[i-1,j-1] + sim_score(seq1[i-1], seq2[j-1], variances)
+            d[i,j] = max(from_top, from_left, diag)
+            if d[i,j] > max_score:
+                max_score = d[i,j]
+            # store where the current entry came from in the backtrace matrix
+            if d[i,j] == from_left:
+                # deletion from longer sequence
+                backtrace = 0
+            elif d[i,j] == from_top:
+                # insertion into longer sequence
+                backtrace = 1
+            elif d[i,j] == diag:
+                # substitution
+                backtrace = 2
+            else:
+                backtrace = -1
+            b[i,j] = backtrace
+    m,n = np.where(d == max_score)
+    # convert from numpy array to integer
+    similarity = max_score/float(max(len(seq1), len(seq2)))
+    if not return_positions:
+        return [int(n[0]), 0, similarity]
+    # store the length of the match as well to return 
+    #(match length can be shorter than query length)
+    match_list = []
+    if (max_score == 0.0):
+        print("WARN!")
+        print(max_score)
+        print((m[0], n[0]))
+        match_list.append([0, 0, similarity])
+        return match_list
+    # do not return more than 5 matches
+    # if m.size>4:
+    #     num_matches = 5
+    # else:
+    #     num_matches = m.size
+    num_matches = m.size
     for i in range(num_matches):
         row = int(m[i])
         column = int(n[i])

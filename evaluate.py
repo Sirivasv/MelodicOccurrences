@@ -148,7 +148,8 @@ def pattern_precision_recall(filtered_results, mel_dict, sim_dict,
             if occurrence==1:
                 ann_occurrences.append(int(l['phrase_id']))
         if ann_occurrences:
-            max_overlap = 0
+            max_overlap = -1
+            ann_length = 1
             for ann in ann_occurrences:
                 comparisons = []
                 ann_match = [s for s in mel if s['phrase_id'] == ann]
@@ -159,6 +160,8 @@ def pattern_precision_recall(filtered_results, mel_dict, sim_dict,
         else:
             continue
         alg_length = len(alg_match)
+        if (alg_length == 0):
+            alg_length = 1
         recall = max_overlap / float(ann_length)
         precision = max_overlap / float(alg_length) 
         pattern_precision_recall.append({'precision': precision, 
