@@ -152,6 +152,61 @@ def local_aligner(melody_list, segment_list,
              'query_length': query_length,
              'matches': {'la': match_results}})
     return result_list
+ 
+def local_aligner_mod_tempo(melody_list, segment_list,
+ music_representation, return_positions, scaling, insertion_weight=0.0,
+ deletion_weight=0.0, substitution_function=sim.pitch_class_difference_tempo, variances=[]):
+    """ this function takes melodies and segments belonging to the same 
+    tune family, represented as lists of dictionaries,
+    and finds occurrences using local alignment, 
+    in the specified music representation.
+    The insertion and deletion weights define the gap penalties,
+    the substitution function (in similarity.py) 
+    defines the substitution rules.
+    If the positions of the occurrences are requested, the scaling factor can be
+    used to determine the correct positions for duration weighed pitch curves.
+    Variances of note values (e.g. pitch variance) need to be given only if 
+    several music representations are passed to the 
+    local alignment for use in sim.multidimensional.
+	"""
+    result_list = []
+    for seg in segment_list: 
+        segment_curve = [a[music_representation] for a in seg['symbols']]
+        query_length = len(segment_curve)
+        if segment_curve[0] is None: 
+		    # if the first value (e.g. pitch interval, ioi) 
+            #is undefined, discard it
+            segment_curve = segment_curve[1:]
+        for mel in melody_list: 
+            mel_curve = [a[music_representation] for a in mel['symbols']]
+            if mel_curve[0] is None:
+			    # if the first value (e.g. pitch interval, ioi) 
+                #is undefined, discard it
+                mel_curve = mel_curve[1:]
+            match_list = sim.local_alignment_mod_tempo(
+             seg, mel, segment_curve, mel_curve,
+             insertion_weight, deletion_weight,
+             substitution_function, return_positions, variances)
+            match_results = [{'similarity': match_list[0][2]}]
+            if return_positions:
+                match = {'similarity': match_list[0][2]}
+                match_results = []
+                for m in match_list:
+                    if (m[1] == 0):
+                        continue
+                    match_start_onset, match_end_onset = find_positions(mel, 
+                     m[0], m[1] - 1, scaling)
+                    match['match_start_onset'] = match_start_onset
+                    match['match_end_onset'] = match_end_onset
+                    match_results.append(match.copy())
+            if (len(match_results) > 0): 
+                result_list.append({'tunefamily_id': mel['tunefamily_id'],
+                'query_filename': seg['filename'],
+                'match_filename': mel['filename'],
+                'query_segment_id': seg['segment_id'],
+                'query_length': query_length,
+                'matches': {'lamodtempo': match_results}})
+    return result_list
 
 def local_aligner_mod(melody_list, segment_list,
  music_representation, return_positions, scaling, insertion_weight=0.0,
