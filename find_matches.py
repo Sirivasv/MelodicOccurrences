@@ -192,8 +192,6 @@ def local_aligner_mod_tempo(melody_list, segment_list,
                 match = {'similarity': match_list[0][2]}
                 match_results = []
                 for m in match_list:
-                    if (m[1] == 0):
-                        continue
                     match_start_onset, match_end_onset = find_positions(mel, 
                      m[0], m[1] - 1, scaling)
                     match['match_start_onset'] = match_start_onset

@@ -163,16 +163,26 @@ def pitch_class_difference_tempo(seq1_dict, seq2_dict, id_1, id_2, seq1, seq2, v
     # print(id_2)
     # print(len(seq1_dict['symbols']))
     # print(len(seq2_dict['symbols']))
-    if (id_1 == 1):
+    # if (id_1 == 1):
+    #     delta_time_1 = 0
+    # else: 
+    #     delta_time_1 = seq1_dict['symbols'][id_1 - 1]['onset'] - seq1_dict['symbols'][id_1 - 2]['onset']
+    
+    # if (id_2 == 1):
+    #     delta_time_2 = 0
+    # else: 
+    #     delta_time_2 = seq2_dict['symbols'][id_2 - 1]['onset'] - seq2_dict['symbols'][id_2 - 2]['onset']
+    
+    if (id_1 >= len(seq1_dict['symbols'])):
         delta_time_1 = 0
     else: 
-        delta_time_1 = seq1_dict['symbols'][id_1 - 1]['onset'] - seq1_dict['symbols'][id_1 - 2]['onset']
+        delta_time_1 = seq1_dict['symbols'][id_1]['onset'] - seq1_dict['symbols'][id_1 - 1]['onset']
     
-    if (id_2 == 1):
+    if (id_2 >= len(seq2_dict['symbols'])):
         delta_time_2 = 0
     else: 
-        delta_time_2 = seq2_dict['symbols'][id_2 - 1]['onset'] - seq2_dict['symbols'][id_2 - 2]['onset']
-    
+        delta_time_2 = seq2_dict['symbols'][id_2]['onset'] - seq2_dict['symbols'][id_2 - 1]['onset']
+
     tot_delta_time = float(delta_time_1) + float(delta_time_2) / 128.0
     tot_diff_time = np.abs(float(delta_time_1) - float(delta_time_2))
             
@@ -236,7 +246,7 @@ def local_alignment_mod_tempo(seq1_dict, seq2_dict, seq1, seq2, insert_score=0.0
         print("WARN!")
         print(max_score)
         print((m[0], n[0]))
-        match_list.append([0, 0, similarity])
+        match_list.append([0, 1, similarity])
         return match_list
     # do not return more than 5 matches
     if m.size>4:
