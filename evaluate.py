@@ -58,6 +58,8 @@ def prepare_position_evaluation(result_list, mel_dict, label_dict, sign):
          and int(s['phrase_id']) == r['query_segment_id']), None)
         match_melody = next((m for m in mel_dict if 
          m['filename']==r['match_filename']), None)
+        if match_melody == None:
+            continue
         algkeys = r['matches'].keys()
         # initiate the melody as containing 
         # only extremely high or low values
@@ -136,6 +138,8 @@ def pattern_precision_recall(filtered_results, mel_dict, sim_dict,
         # get the melody in which the query is matched
         mel = next((m['symbols'] for m in mel_dict 
          if m['filename'] == filt['match_filename']), None)
+        if (mel == None):
+            continue
         alg_match = [s for s in mel if alg_start<= s['onset'] <= alg_end]
         matched_phrase = next((s for s in sim_dict 
          if s['filename'] == filt['query_filename'] and 

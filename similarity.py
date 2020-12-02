@@ -173,19 +173,25 @@ def pitch_class_difference_tempo(seq1_dict, seq2_dict, id_1, id_2, seq1, seq2, v
     # else: 
     #     delta_time_2 = seq2_dict['symbols'][id_2 - 1]['onset'] - seq2_dict['symbols'][id_2 - 2]['onset']
     
-    if (id_1 >= len(seq1_dict['symbols'])):
-        delta_time_1 = 0
-    else: 
-        delta_time_1 = seq1_dict['symbols'][id_1]['onset'] - seq1_dict['symbols'][id_1 - 1]['onset']
+    # if (id_1 >= len(seq1_dict['symbols'])):
+    #     delta_time_1 = 0
+    # else: 
+    #     delta_time_1 = seq1_dict['symbols'][id_1]['onset'] - seq1_dict['symbols'][id_1 - 1]['onset']
     
-    if (id_2 >= len(seq2_dict['symbols'])):
-        delta_time_2 = 0
-    else: 
-        delta_time_2 = seq2_dict['symbols'][id_2]['onset'] - seq2_dict['symbols'][id_2 - 1]['onset']
+    # if (id_2 >= len(seq2_dict['symbols'])):
+    #     delta_time_2 = 0
+    # else: 
+    #     delta_time_2 = seq2_dict['symbols'][id_2]['onset'] - seq2_dict['symbols'][id_2 - 1]['onset']
+    # print(id_1, id_2)
+    delta_time_1 = seq1_dict['symbols'][id_1-1]['onset']
+    delta_time_2 = seq2_dict['symbols'][id_2-1]['onset']
 
-    tot_delta_time = float(delta_time_1) + float(delta_time_2) / 128.0
+    tot_delta_time = (float(delta_time_1) + float(delta_time_2)) / 64.0
     tot_diff_time = np.abs(float(delta_time_1) - float(delta_time_2))
-            
+
+    # print(delta_time_1, delta_time_2)
+    # print(tot_diff_time, tot_delta_time)
+
     if (pitch_1.spanish == pitch_2.spanish) and (tot_diff_time <= tot_delta_time):
         return 1.0
     else:

@@ -93,7 +93,7 @@ cd_labels = []
 for ev in ann_values_sim_dict_for_roc:
   for annotation in ev['position_eval']:
     # # print(annotation)
-    ann1_labels.append(annotation['ann1'])
+    ann1_labels.append(annotation['majority'])
     cd_labels.append(annotation['cd'])
 # print(ann1_labels)
 # print(cd_labels)

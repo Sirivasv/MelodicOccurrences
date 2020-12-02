@@ -93,7 +93,7 @@ siam_labels = []
 for ev in ann_values_sim_dict_for_roc:
   for annotation in ev['position_eval']:
     # # print(annotation)
-    ann1_labels.append(annotation['ann1'])
+    ann1_labels.append(annotation['majority'])
     siam_labels.append(annotation['siam'])
 # print(ann1_labels)
 # print(siam_labels)

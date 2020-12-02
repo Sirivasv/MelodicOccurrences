@@ -32,27 +32,24 @@ phrase_dict_LOADED = pickle.load(open("phrases.pkl", "rb"))
 # # print(pattern_precision_recall(ev_results, melody_dict, phrase_dict, "ed", 'ann1'))
 full_results_LOADED = {}
 
-# full_results_LOADED = pickle.load(open("O2_LAMODTEMPO_DistanceMeasures_LOADED_1606776970.7239826.pkl", "rb"))
-# full_results_LOADED = pickle.load(open("O2_LAMODTEMPO_DistanceMeasures_LOADED_1606777539.7832446.pkl", "rb"))
-# full_results_LOADED = pickle.load(open("O2_LAMODTEMPO_DistanceMeasures_LOADED_1606777864.51794.pkl", "rb"))
-# full_results_LOADED = pickle.load(open("O2_LAMODTEMPO_DistanceMeasures_LOADED_1606778254.455357.pkl", "rb"))
-full_results_LOADED = pickle.load(open("O2_LAMODTEMPO_DistanceMeasures_LOADED_1606782166.9786353.pkl", "rb"))
+# full_results_LOADED = pickle.load(open("O2_LAMODTEMPO_DistanceMeasures_LOADED_1606938485.179634.pkl", "rb")) # 1_2
+full_results_LOADED = pickle.load(open("O2_LAMODTEMPO_DistanceMeasures_LOADED_1606939340.3359709.pkl", "rb")) # 1_64
 
 # print("++++++++++")
 # print("******FULLRESULTSLOADED****")
 # print(full_results_LOADED)
 
-def greater_than(val_x, threshold):
-  return (val_x > threshold)
+# def greater_than(val_x, threshold):
+#   return (val_x > threshold)
 
-def lower_than(val_x, threshold):
-  return (val_x < threshold)
+# def lower_than(val_x, threshold):
+#   return (val_x < threshold)
 
-threshold_val = 0.5
-filtered_results = filter_results(full_results_LOADED, threshold_val, greater_than, sim_measure='lamodtempo')
-# print("++++++++++")
-# print("****FILTEREDRESULTS******")
-# print(filtered_results)
+# threshold_val = 0.5
+# filtered_results = filter_results(full_results_LOADED, threshold_val, greater_than, sim_measure='lamodtempo')
+# # print("++++++++++")
+# # print("****FILTEREDRESULTS******")
+# # print(filtered_results)
 
 sim_phrase_true_path = "/media/sirivasv/DATAL/MCC/DATASUBSET/MTC-ANN-2.0/metadata/MTC-ANN-phrase-similarity.csv"
 sim_phrase_true_keys = ["filename","phrase_id","ann1","ann2","ann3"]
@@ -61,31 +58,31 @@ sim_phrase_true_dict = csv_to_dict(sim_phrase_true_path, sim_phrase_true_keys)
 # print("*****TRUELABELS*****")
 # print(sim_phrase_true_dict)
 
-pattern_prec_recall = pattern_precision_recall(full_results_LOADED, melody_dict_LOADED, sim_phrase_true_dict, 'lamodtempo', "ann1")
+# pattern_prec_recall = pattern_precision_recall(full_results_LOADED, melody_dict_LOADED, sim_phrase_true_dict, 'lamodtempo', "majority")
 # print("++++++++++")
 # print("*****PRECRECALL*****")
 # print(pattern_prec_recall)
-sum_prec = 0.0
-sum_recall = 0.0
-for pattrn in pattern_prec_recall:
-  sum_prec += pattrn["precision"]
-  sum_recall += pattrn["recall"]
+# sum_prec = 0.0
+# sum_recall = 0.0
+# for pattrn in pattern_prec_recall:
+#   sum_prec += pattrn["precision"]
+#   sum_recall += pattrn["recall"]
 
 # print("++++++++++")
 # print("*****PRECRECALLLEN*****")
 # print((sum_prec, sum_recall, len(pattern_prec_recall)))
 
 
-sum_prec /= len(pattern_prec_recall)
-sum_recall /= len(pattern_prec_recall)
+# sum_prec /= len(pattern_prec_recall)
+# sum_recall /= len(pattern_prec_recall)
 
-print("++++++++++")
-print("*****PRECRECALLMEAN*****")
-print((sum_prec, sum_recall))
+# print("++++++++++")
+# print("*****PRECRECALLMEAN*****")
+# print((sum_prec, sum_recall))
 
-print("++++++++++")
-print("*****F1MEAN*****")
-print(return_F_score(sum_prec, sum_recall))
+# print("++++++++++")
+# print("*****F1MEAN*****")
+# print(return_F_score(sum_prec, sum_recall))
 
 # print("++++++++++")
 # print("*****ANNSCOREROC_*****")
@@ -98,8 +95,8 @@ ann1_labels = []
 lamodtempo_labels = []
 for ev in ann_values_sim_dict_for_roc:
   for annotation in ev['position_eval']:
-    # # print(annotation)
-    ann1_labels.append(annotation['ann1'])
+    # print(annotation)
+    ann1_labels.append(annotation['majority'])
     lamodtempo_labels.append(annotation['lamodtempo'])
 # print(ann1_labels)
 # print(lamodtempo_labels)
